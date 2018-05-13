@@ -5,7 +5,7 @@ var connMysql = function() {
         host: "localhost",
         user: "romney",
         password: "123456",
-        database: "noticias"
+        database: "jornal"
     });
 }
 
