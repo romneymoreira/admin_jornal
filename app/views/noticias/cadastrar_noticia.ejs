@@ -127,30 +127,69 @@
                             <div class="portlet box blue-hoki">
                                 <div class="portlet-title">
                                     <div class="caption">
-                                        <i class="fa fa-gift"></i>Bootstrap Summernote WYSIWYG Editor
-                                    </div>
-                                    <div class="tools">
-                                        <a href="javascript:;" class="collapse">
-                                        </a>
-                                        <a href="#portlet-config" data-toggle="modal" class="config">
-                                        </a>
-                                        <a href="javascript:;" class="reload">
-                                        </a>
-                                        <a href="javascript:;" class="remove">
-                                        </a>
+                                        <i class="fa fa-gift"></i>Cadastro de Noticias
                                     </div>
                                 </div>
                                 <div class="portlet-body form">
-                                    <form class="form-horizontal form-bordered">
-                                        <div class="form-body">
-                                            <div class="form-group">
-                                                <div class="col-md-12">
-                                                    <div name="summernote" id="summernote_1">
+
+                                    <% if(validacao) { %>
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                <% for(var i=0; i < validacao.length; i++) { %>
+                                                    <li>
+                                                        <%= validacao[i].msg %>
+                                                    </li>
+                                                    <% } %>
+                                            </ul>
+                                        </div>
+                                        <br>
+                                        <% } %>
+                                            <form class="form-horizontal form-bordered" id="formnoticia" action="/noticias/cadastrar" method="post" onsubmit="submit">
+                                                <div class="form-body">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Categoria</label>
+                                                                <select class="form-control" id="selCategoria" name="idCategoria">
+                                                            <option value="0">Selecione uma categoria</option>
+                                                            <% for(var i=0; i < categorias.length; i++) { %>
+                                                                <option value="<%=categorias[i].Id%>"><%=categorias[i].Descricao%></option>
+                                                            <% } %>
+                                                        </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Autor</label>
+                                                                <select class="form-control" id="selAutor" name="idAutor">
+                                                                <option value="0">Selecione um autor</option>
+                                                                <% for(var i=0; i < autores.length; i++) { %>
+                                                                    <option value="<%=autores[i].Id%>"><%=autores[i].Nome%></option>
+                                                                <% } %>
+                                                            </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label>Titulo</label>
+                                                                <input type="text" class="form-control" name="titulo" id="titulo" value="<%=noticia[0].Titulo%>" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <textarea name="corpo" id="corpo"></textarea>
+                                                            <!-- <div name="summernote_1" id="summernote_1">
+                                                            </div> -->
+                                                        </div>
+                                                        <input type="hidden" name="data" value="2018-05-16" />
+                                                        <input type="hidden" name="Id" id="Id" />
+                                                        <input type="hidden" name="status" value="A" />
+                                                        <div class="col-md-12">
+                                                            <button type="button" id="publish" class="btn green pull-right">Salvar</button>
+                                                        </div>
+
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </form>
+                                            </form>
                                 </div>
                             </div>
                         </div>
@@ -160,5 +199,25 @@
             </div>
             <!-- END CONTENT -->
     </div>
+
     <!-- END CONTAINER -->
     <% include ../footer/footer.ejs %>
+        <script type="text/javascript">
+            $("#publish").click(function() {
+                //$('#corpo').html($('#summernote_1').code());
+                $("#formnoticia").submit();
+            });
+            $(document).ready(function() {
+                $("#selCategoria").val('<%=noticia[0].IdCategoria%>');
+                $("#Id").val('<%=noticia[0].Id%>');
+                $("#selAutor").val('<%=noticia[0].IdAutor%>');
+                $('#corpo').html('<%=noticia[0].Corpo%>');
+
+                $('#corpo').summernote({
+                    height: 500, // set editor height
+                    minHeight: null, // set minimum height of editor
+                    maxHeight: null, // set maximum height of editor
+                    focus: true, // set focus to editable area after initializing summernote
+                });
+            });
+        </script>

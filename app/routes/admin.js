@@ -3,7 +3,7 @@ module.exports = function(app) {
         app.app.controllers.admin.form_add_noticia(app, req, resp);
     });
 
-    app.post("/noticias/salvar", function(req, resp) {
+    app.post("/noticias/salvar2", function(req, resp) {
         var noticia = req.body;
 
         req.assert("titulo", "Titulo deve ser preenchido").notEmpty();
