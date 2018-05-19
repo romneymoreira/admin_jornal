@@ -147,6 +147,9 @@
                                             <form class="form-horizontal form-bordered" id="formnoticia" action="/noticias/cadastrar" method="post" onsubmit="submit">
                                                 <div class="form-body">
                                                     <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <a class="btn default pull-right" data-toggle="modal" href="#upload"><i class="fa fa-upload"> Adicionar Imagem</i></a>
+                                                        </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Categoria</label>
@@ -198,8 +201,169 @@
                 </div>
             </div>
             <!-- END CONTENT -->
-    </div>
+            <div class="modal fade bs-modal-lg" id="upload" tabindex="-1" role="upload" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Inclusão de Imagens</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-success">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">Instruções</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                <li>
+                                                    The maximum file size for uploads in this demo is <strong>5 MB</strong> (default file size is unlimited).
+                                                </li>
+                                                <li>
+                                                    Only image files (<strong>JPG, GIF, PNG</strong>) are allowed in this demo (by default there is no file type restriction).
+                                                </li>
+                                                <li>
+                                                    Uploaded files will be deleted automatically after <strong>5 minutes</strong> (demo setting).
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <form id="fileupload" action="../../assets/global/plugins/jquery-file-upload/server/php/" method="POST" enctype="multipart/form-data">
+                                        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                                        <div class="row fileupload-buttonbar">
+                                            <div class="col-lg-7">
+                                                <!-- The fileinput-button span is used to style the file input field as button -->
+                                                <span class="btn green fileinput-button">
+                                                        <i class="fa fa-plus"></i>
+                                                        <span>
+                                                        Add files... </span>
+                                                <input type="file" name="files[]" multiple="">
+                                                </span>
+                                                <button type="submit" class="btn blue start">
+                                                        <i class="fa fa-upload"></i>
+                                                        <span>
+                                                        Start upload </span>
+                                                        </button>
+                                                <button type="reset" class="btn warning cancel">
+                                                        <i class="fa fa-ban"></i>
+                                                        <span>
+                                                        Cancel upload </span>
+                                                        </button>
+                                                <button type="button" class="btn red delete">
+                                                        <i class="fa fa-trash"></i>
+                                                        <span>
+                                                        Delete </span>
+                                                        </button>
+                                                <!-- <input type="checkbox" class="toggle"> -->
+                                                <!-- The global file processing state -->
+                                                <span class="fileupload-process">
+                                                        </span>
+                                            </div>
+                                            <!-- The global progress information -->
+                                            <div class="col-lg-5 fileupload-progress fade">
+                                                <!-- The global progress bar -->
+                                                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                                    <div class="progress-bar progress-bar-success" style="width:0%;">
+                                                    </div>
+                                                </div>
+                                                <!-- The extended global progress information -->
+                                                <div class="progress-extended">
+                                                    &nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- The table listing the files available for upload/download -->
+                                        <table role="presentation" class="table table-striped clearfix">
+                                            <tbody class="files">
+                                            </tbody>
+                                        </table>
+                                    </form>
 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+    </div>
+    <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+    <script id="template-upload" type="text/x-tmpl">
+        {% for (var i=0, file; file=o.files[i]; i++) { %}
+        <tr class="template-upload fade">
+            <td>
+                <span class="preview"></span>
+            </td>
+            <td>
+                <p class="name">{%=file.name%}</p>
+                <strong class="error text-danger label label-danger"></strong>
+            </td>
+            <td>
+                <p class="size">Processing...</p>
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                </div>
+            </td>
+            <td>
+                {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn blue start" disabled>
+                <i class="fa fa-upload"></i>
+                <span>Start</span>
+            </button> {% } %} {% if (!i) { %}
+                <button class="btn red cancel">
+                <i class="fa fa-ban"></i>
+                <span>Cancel</span>
+            </button> {% } %}
+            </td>
+        </tr>
+        {% } %}
+    </script>
+    <!-- The template to display files available for download -->
+    <script id="template-download" type="text/x-tmpl">
+        {% for (var i=0, file; file=o.files[i]; i++) { %}
+        <tr class="template-download fade">
+            <td>
+                <span class="preview">
+                    {% if (file.thumbnailUrl) { %}
+                        <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
+                    {% } %}
+                </span>
+            </td>
+            <td>
+                <p class="name">
+                    {% if (file.url) { %}
+                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl? 'data-gallery': ''%}>{%=file.name%}</a> {% } else { %}
+                    <span>{%=file.name%}</span> {% } %}
+                </p>
+                {% if (file.error) { %}
+                <div><span class="label label-danger">Error</span> {%=file.error%}</div>
+                {% } %}
+            </td>
+            <td>
+                <span class="size">{%=o.formatFileSize(file.size)%}</span>
+            </td>
+            <td>
+                {% if (file.deleteUrl) { %}
+                <button class="btn red delete btn-sm" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}' {% } %}>
+                        <i class="fa fa-trash-o"></i>
+                        <span>Delete</span>
+                    </button>
+                <input type="checkbox" name="delete" value="1" class="toggle"> {% } else { %}
+                <button class="btn yellow cancel btn-sm">
+                        <i class="fa fa-ban"></i>
+                        <span>Cancel</span>
+                    </button> {% } %}
+            </td>
+        </tr>
+        {% } %}
+    </script>
+    <!-- BEGIN CORE PLUGINS -->
     <!-- END CONTAINER -->
     <% include ../footer/footer.ejs %>
         <script type="text/javascript">
@@ -208,6 +372,7 @@
                 $("#formnoticia").submit();
             });
             $(document).ready(function() {
+
                 $("#selCategoria").val('<%=noticia[0].IdCategoria%>');
                 $("#Id").val('<%=noticia[0].Id%>');
                 $("#selAutor").val('<%=noticia[0].IdAutor%>');
@@ -219,5 +384,7 @@
                     maxHeight: null, // set maximum height of editor
                     focus: true, // set focus to editable area after initializing summernote
                 });
+
+                FormFileUpload.init();
             });
         </script>
