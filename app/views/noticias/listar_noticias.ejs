@@ -137,11 +137,11 @@
                                                 <thead>
                                                     <tr>
                                                         <th style="width: 11%;">Categoria</th>
-                                                        <th style="width: 50%;">Titulo</th>
+                                                        <th style="width: 45%;">Titulo</th>
                                                         <th style="width: 12%;">Autor</th>
                                                         <th style="width: 10%;">Status</th>
                                                         <th style="width: 12%;">Data</th>
-                                                        <th style="width: 5%;">#</th>
+                                                        <th style="width: 10%;">#</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -162,7 +162,12 @@
                                                             <td>
                                                                 <%= noticias[i].datanoticia %>
                                                             </td>
-                                                            <td><a class="btn btn-outline btn-success dim" href="/noticia?id=<%= noticias[i].id %>"><i class="fa fa-upload"></i></a></td>
+                                                            <td>
+                                                                <a class="btn btn-outline btn-success dim" href="/noticia?id=<%= noticias[i].id %>"><i class="fa fa-upload"></i></a>
+                                                                <% if(noticias[i].status == 'A') { %>
+                                                                    <a class="btn btn-outline btn-info dim" href="/publish?id=<%= noticias[i].id %>"><i class="fa fa-globe"></i></a>
+                                                                    <% } %>
+                                                            </td>
                                                         </tr>
                                                         <% } %>
                                                 </tbody>

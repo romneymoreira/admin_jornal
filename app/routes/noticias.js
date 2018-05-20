@@ -1,3 +1,7 @@
+var busboy2 = require('busboy');
+var fs = require('fs');
+var path = require('path');
+var dateFormat = require('dateformat');
 module.exports = function(app) {
     app.get("/noticias", function(req, resp) {
         var connection = app.config.dbConnection();
@@ -13,7 +17,6 @@ module.exports = function(app) {
         req.assert("idCategoria", "Categoria deve ser preenchido").notEmpty();
         req.assert("corpo", "Noticia deve ser preenchido").notEmpty();
         var erros = req.validationErrors();
-        console.log(erros);
         if (erros) {
             resp.render("noticias/cadastrar", { validacao: erros, noticia: noticia });
             return;
@@ -33,9 +36,34 @@ module.exports = function(app) {
 
     });
 
+    app.post('/upload', function(req, res) {
+        var now = new Date();
+        var busboy = new busboy2({ headers: req.headers });
+        busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+            var dir = './app/uploads/' + dateFormat(now, "dd-mm-yyyy");;
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir);
+            }
+            var saveTo = path.join(dir, filename);
+            console.log('Uploading: ' + saveTo);
+            file.pipe(fs.createWriteStream(saveTo));
+        });
+        busboy.on('finish', function() {
+            console.log('Upload complete');
+            res.writeHead(200, { 'Connection': 'close' });
+            res.end("That's all folks!");
+        });
+        console.log(req.pipe(busboy));
+        return req.pipe(busboy);
+    });
+
+    app.get("/publish", function(req, resp) {
+        var parametros = req.query;
+        resp.redirect("http://localhost:4001/publish?id=" + parametros.id);
+        // window.open('http://localhost:4001/publish?id=' + parametros.id, '_blank');
+    });
 
     app.get("/noticia", function(req, resp) {
-        //resp.render("noticias/cadastrar_noticia");
         var parametros = req.query;
         var connection = app.config.dbConnection();
         var noticiaModel = new app.app.models.NoticiasDAO(connection);
@@ -49,7 +77,6 @@ module.exports = function(app) {
                 noticiaModel.getAutores(function(error, result) {
                     autores = result;
                     noticiaModel.getNoticia(parametros, function(error, result2) {
-                        console.log(result2);
                         resp.render("noticias/cadastrar_noticia", { noticia: result2, categorias: categorias, autores: autores, validacao: null });
                     });
                 });

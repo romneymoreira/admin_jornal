@@ -1,4 +1,20 @@
 <% include ../head/head.ejs %>
+    <style>
+        label.error {
+            color: red;
+        }
+        
+        .form-control.error {
+            border: 1px solid;
+            margin: 10px 0px;
+            padding: 15px 10px 15px 50px;
+            background-repeat: no-repeat;
+            background-position: 10px center;
+            color: #D8000C;
+            background-color: #FFBABA;
+            background-image: url('error.png');
+        }
+    </style>
     <!-- BEGIN CONTAINER -->
     <div class="page-container">
         <% include ../menu/menu.ejs %>
@@ -144,7 +160,7 @@
                                         </div>
                                         <br>
                                         <% } %>
-                                            <form class="form-horizontal form-bordered" id="formnoticia" action="/noticias/cadastrar" method="post" onsubmit="submit">
+                                            <form class="form-horizontal form-bordered" name="formnoticia" id="formnoticia" action="/noticias/cadastrar" method="post" onsubmit="submit">
                                                 <div class="form-body">
                                                     <div class="form-group">
                                                         <div class="col-md-12">
@@ -153,8 +169,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Categoria</label>
-                                                                <select class="form-control" id="selCategoria" name="idCategoria">
-                                                            <option value="0">Selecione uma categoria</option>
+                                                                <select class="form-control" id="selCategoria" placeholder="Selecione uma categoria" required name="idCategoria">
                                                             <% for(var i=0; i < categorias.length; i++) { %>
                                                                 <option value="<%=categorias[i].Id%>"><%=categorias[i].Descricao%></option>
                                                             <% } %>
@@ -164,8 +179,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Autor</label>
-                                                                <select class="form-control" id="selAutor" name="idAutor">
-                                                                <option value="0">Selecione um autor</option>
+                                                                <select class="form-control" id="selAutor" aria-placeholder="Selecione um autor" name="idAutor" required>
                                                                 <% for(var i=0; i < autores.length; i++) { %>
                                                                     <option value="<%=autores[i].Id%>"><%=autores[i].Nome%></option>
                                                                 <% } %>
@@ -175,11 +189,11 @@
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label>Titulo</label>
-                                                                <input type="text" class="form-control" name="titulo" id="titulo" value="<%=noticia[0].Titulo%>" />
+                                                                <input type="text" class="form-control" name="titulo" id="titulo" required value="<%=noticia[0].Titulo%>" />
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12">
-                                                            <textarea name="corpo" id="corpo"></textarea>
+                                                            <textarea name="corpo" id="corpo" required></textarea>
                                                             <!-- <div name="summernote_1" id="summernote_1">
                                                             </div> -->
                                                         </div>
@@ -187,7 +201,7 @@
                                                         <input type="hidden" name="Id" id="Id" />
                                                         <input type="hidden" name="status" value="A" />
                                                         <div class="col-md-12">
-                                                            <button type="button" id="publish" class="btn green pull-right">Salvar</button>
+                                                            <button type="submit" id="publish" class="btn green pull-right">Salvar</button>
                                                         </div>
 
                                                     </div>
@@ -229,31 +243,31 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <form id="fileupload" action="../../assets/global/plugins/jquery-file-upload/server/php/" method="POST" enctype="multipart/form-data">
+                                    <form id="fileupload" action="/upload" method="POST" enctype="multipart/form-data">
                                         <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                                         <div class="row fileupload-buttonbar">
-                                            <div class="col-lg-7">
+                                            <div class="col-lg-9">
                                                 <!-- The fileinput-button span is used to style the file input field as button -->
                                                 <span class="btn green fileinput-button">
                                                         <i class="fa fa-plus"></i>
                                                         <span>
-                                                        Add files... </span>
-                                                <input type="file" name="files[]" multiple="">
+                                                        Adicionar arquivo... </span>
+                                                <input type="file" name="files">
                                                 </span>
                                                 <button type="submit" class="btn blue start">
                                                         <i class="fa fa-upload"></i>
                                                         <span>
-                                                        Start upload </span>
+                                                        Iniciar upload </span>
                                                         </button>
                                                 <button type="reset" class="btn warning cancel">
                                                         <i class="fa fa-ban"></i>
                                                         <span>
-                                                        Cancel upload </span>
+                                                        Cancelar upload </span>
                                                         </button>
                                                 <button type="button" class="btn red delete">
                                                         <i class="fa fa-trash"></i>
                                                         <span>
-                                                        Delete </span>
+                                                        Excluir </span>
                                                         </button>
                                                 <!-- <input type="checkbox" class="toggle"> -->
                                                 <!-- The global file processing state -->
@@ -261,7 +275,7 @@
                                                         </span>
                                             </div>
                                             <!-- The global progress information -->
-                                            <div class="col-lg-5 fileupload-progress fade">
+                                            <div class="col-lg-3 fileupload-progress fade">
                                                 <!-- The global progress bar -->
                                                 <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                                     <div class="progress-bar progress-bar-success" style="width:0%;">
@@ -314,11 +328,11 @@
                 {% if (!i && !o.options.autoUpload) { %}
                 <button class="btn blue start" disabled>
                 <i class="fa fa-upload"></i>
-                <span>Start</span>
+                <span>Iniciar</span>
             </button> {% } %} {% if (!i) { %}
                 <button class="btn red cancel">
                 <i class="fa fa-ban"></i>
-                <span>Cancel</span>
+                <span>Cancelar</span>
             </button> {% } %}
             </td>
         </tr>
@@ -367,9 +381,40 @@
     <!-- END CONTAINER -->
     <% include ../footer/footer.ejs %>
         <script type="text/javascript">
+            $("#formnoticia").validate({
+                rules: {
+                    "titulo": {
+                        required: true
+                    },
+                    "idCategoria": {
+                        required: true
+                    },
+                    "idAutor": {
+                        required: true
+                    },
+                    "corpo": {
+                        required: true
+                    }
+                },
+                messages: {
+                    "titulo": {
+                        required: 'O campo título é obrigatório!'
+                    },
+                    "idCategoria": {
+                        required: 'Selecione uma categoria!'
+                    },
+                    "idAutor": {
+                        required: 'Selecione um autor!'
+                    },
+                    "corpo": {
+                        required: 'Você deve preencher o campo notícia!'
+                    }
+                }
+            });
             $("#publish").click(function() {
+
                 //$('#corpo').html($('#summernote_1').code());
-                $("#formnoticia").submit();
+                //$("#formnoticia").submit();
             });
             $(document).ready(function() {
 
